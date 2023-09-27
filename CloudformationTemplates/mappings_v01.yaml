@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Sample template
+
+Parameters:
+  LambdaFunctionName:
+    Description: Please enter the LambdaFuncion Name
+    Type: String
+  Environment:
+    Type: String
+    AllowedValues:
+      - nddev
+      - pydev
+      - rbdev
+
+Mappings:
+  LanguageMap:
+    nddev:
+      Runtime: "nodejs14.x"
+      name: 'nddev'
+    
+    pydev:
+      Runtime: "python3.7"
+      name: 'pydev'
+
+    rbdev:
+      Runtime: "Ruby 2.7"
+      name: 'rbdev'
+
+Resources:
+
+  HelloLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+                
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Role: !GetAtt HelloLambdaRole.Arn
+      Runtime: !FindInMap [LanguageMap , !Ref Environment , Runtime]
+      Handler: index.my_handler
+      Code:
+        ZipFile: |
+          def my_handler(event, context):
+            message = 'Hello Lambda World!'
+            return message
+  

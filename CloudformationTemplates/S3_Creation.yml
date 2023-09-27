@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create S3 Bucket
+
+Resources:
+    S3Bucketfordevops:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+          BucketName: bit02032027test
